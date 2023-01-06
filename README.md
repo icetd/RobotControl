@@ -17,5 +17,7 @@ cmake .. && make -j8
 ./bin/RobotControl
 ```
 
+## Affirm
 
+> Many functions are not perfect, for learning only
 
