@@ -53,7 +53,7 @@
       <enum>QFrame::Raised</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="page_main">
       <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -222,7 +222,7 @@
        <item>
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
-          <number>3</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page_topic">
           <property name="geometry">
@@ -320,14 +320,14 @@
                 </size>
                </property>
                <property name="text">
-                <string>电池电量话题:</string>
+                <string>机器人坐标话题:</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lEdit_Topic_battery">
+              <widget class="QLineEdit" name="lEdit_Topic_pose">
                <property name="text">
-                <string>battery</string>
+                <string>amcl</string>
                </property>
               </widget>
              </item>

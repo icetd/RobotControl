@@ -72,8 +72,8 @@ public:
     void setPos();
     void setGoal();
     void setMoveCamera();
+    void setSelect();
 
-    void sendGoalTopic();
     void getDisplayTreeMode();
 
 signals:

@@ -141,24 +141,39 @@ void AppRviz::createDisplat(QString displayName, QString topicName)
 }
 void AppRviz::setGlobalOptions(QString frameName, QColor backColor, int frameRate)
 {
-
+    m_manager->setFixedFrame(frameName);
+    m_manager->setProperty("Background Color", backColor);
+    m_manager->setProperty("Frame Rate", frameRate);
+    m_manager->startUpdate();
 }
 void AppRviz::setPos()
 {
-
+    m_currect_tool = m_tool_manager->addTool("rviz/SetInitialPose");
+    m_tool_manager->setCurrentTool(m_currect_tool);
+    m_manager->startUpdate();
 }
+
 void AppRviz::setGoal()
 {
-
+    m_currect_tool = m_tool_manager->addTool("rviz/SetGoal");
+    rviz::Property* pro = m_currect_tool->getPropertyContainer();
+    pro->subProp("Topic")->setValue("/move_base_simple/goal");
+    m_manager->setFixedFrame("map");
+    m_tool_manager->setCurrentTool(m_currect_tool);
+    m_manager->startUpdate();
 }
 void AppRviz::setMoveCamera()
 {
-
+    m_currect_tool = m_tool_manager->addTool("rviz/MoveCamera");
+    m_tool_manager->setCurrentTool(m_currect_tool);
+    m_manager->startUpdate();
 }
 
-void AppRviz::sendGoalTopic()
+void AppRviz::setSelect()
 {
-
+    m_currect_tool = m_tool_manager->addTool("rviz/Select");
+    m_tool_manager->setCurrentTool(m_currect_tool);
+    m_manager->startUpdate();
 }
 
 void AppRviz::getDisplayTreeMode()

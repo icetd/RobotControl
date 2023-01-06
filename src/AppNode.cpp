@@ -1,10 +1,16 @@
 #include "AppNode.h"
+#include <QSettings>
+
 
 AppNode::AppNode(int argc, char **argv):_argc(argc), _argv(argv)
 {
-
+    QSettings* configs = new QSettings("/opt/RobotControl/config/config.ini", QSettings::IniFormat);   
+    
+    cmd_topic = configs->value("topic/topic_speed").toString();
+    odom_topic = configs->value("topic/topic_odom").toString();
+    pose_topic = configs->value("topic/topic_pose").toString();
+    goal_topic = configs->value("topic/topic_goal").toString();
 }
-
 AppNode::~AppNode()
 {   
     if (ros::isStarted()) {
@@ -63,8 +69,10 @@ void AppNode::run()
 void AppNode::TopicSubPub()
 {
     ros::NodeHandle nh;
-    m_pub_cmd = nh.advertise<geometry_msgs::Twist>("cmd_vel", 10);
+    m_pub_cmd = nh.advertise<geometry_msgs::Twist>(cmd_topic.toStdString(), 10);
+    m_pub_goal = nh.advertise<geometry_msgs::PoseStamped>(goal_topic.toStdString(), 1000);
     m_sub_cmd = nh.subscribe<nav_msgs::Odometry>(odom_topic.toStdString(), 200, &AppNode::speedCallback, this);
+    m_sub_pose = nh.subscribe(pose_topic.toStdString(), 1000, &AppNode::poseCallback, this);
 }
 
 void AppNode::move(char key, float speed_linear, float speed_angular)
@@ -99,3 +107,21 @@ void AppNode::speedCallback(const nav_msgs::Odometry::ConstPtr &msg)
     emit speed_y(msg->twist.twist.linear.y);
 }
 
+void AppNode::poseCallback(const geometry_msgs::PoseWithCovarianceStamped& pos)
+{
+    emit signal_position(pos.header.frame_id.data(), pos.pose.pose.position.x, pos.pose.pose.position.y, pos.pose.pose.position.z, pos.pose.pose.orientation.w);
+}
+
+void AppNode::set_goal(QString frame, double x, double y, double z, double w)
+{
+    geometry_msgs::PoseStamped goal;
+    goal.header.frame_id = frame.toStdString();
+
+    goal.pose.position.x = x;
+    goal.pose.position.y = y;
+    goal.pose.position.z = z;
+    goal.pose.orientation.w = w;
+
+    m_pub_goal.publish(goal);
+    ros::spinOnce();
+}

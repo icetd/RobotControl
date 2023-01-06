@@ -47,7 +47,7 @@ void LoginPage::readConfig()
 {
     QString topic_speed;
     QString topic_odom;
-    QString topic_battery;
+    QString topic_pose;
     QString topic_goal;
  
     QString frame_laser;
@@ -63,10 +63,10 @@ void LoginPage::readConfig()
     QSettings* configs = new QSettings("/opt/RobotControl/config/config.ini", QSettings::IniFormat);   
 
     topic_speed = configs->value("topic/topic_speed").toString();
-    topic_odom = configs->value("topic/topic_speed").toString();
-    topic_battery = configs->value("topic/topic_speed").toString();
+    topic_odom = configs->value("topic/topic_odom").toString();
+    topic_pose = configs->value("topic/topic_pose").toString();
     topic_goal = configs->value("topic/topic_goal").toString();
-
+    
     frame_laser = configs->value("frame/frame_laser").toString();
     frame_map = configs->value("frame/frame_map").toString();
     frame_base = configs->value("frame/frame_base").toString();
@@ -79,7 +79,7 @@ void LoginPage::readConfig()
 
     ui->lEdit_Topic_speed->setText(topic_speed);
     ui->lEdit_Topic_odom->setText(topic_odom);
-    ui->lEdit_Topic_battery->setText(topic_battery);
+    ui->lEdit_Topic_pose->setText(topic_pose);
     ui->lEdit_Topic_goal->setText(topic_goal);
 
     ui->lEdit_Frame_laser->setText(frame_laser);
@@ -98,7 +98,7 @@ void LoginPage::saveConfig()
     QSettings* configs = new QSettings("/opt/RobotControl/config/config.ini", QSettings::IniFormat);
     configs->setValue("topic/topic_speed", ui->lEdit_Topic_speed->text());
     configs->setValue("topic/topic_odom", ui->lEdit_Topic_odom->text());
-    configs->setValue("topic/topic_power", ui->lEdit_Topic_battery->text());
+    configs->setValue("topic/topic_pose", ui->lEdit_Topic_pose->text());
     configs->setValue("topic/topic_goal", ui->lEdit_Topic_goal->text());
 
     configs->setValue("frame/frame_laser", ui->lEdit_Frame_laser->text());

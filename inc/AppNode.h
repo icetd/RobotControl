@@ -25,6 +25,7 @@ public:
     bool init (const std::string &master_url, const std::string &host_url);
 
     void move(char _key, float _speed_linear, float _speed_angular);
+    void set_goal(QString frame, double x, double y, double z, double w);
 
     void run() override;
 
@@ -32,19 +33,23 @@ signals:
     void rosShutdown();
     void speed_x(double x);
     void speed_y(double y);
+    void signal_position(QString frame, double x, double y, double z, double w);
 
 private:
     int _argc;
     char **_argv;
 
     ros::Publisher m_pub_cmd;
+    ros::Publisher m_pub_goal;
     ros::Subscriber m_sub_cmd;
-    ros::Subscriber m_sub_pos;
+    ros::Subscriber m_sub_pose;
     ros::Subscriber m_laser_sub;
     ros::Subscriber m_map_sub;
 
+    QString cmd_topic;
     QString odom_topic;
     QString pose_topic; 
+    QString goal_topic;
     QString laser_topic;
     QString map_Topic;
     QString navGoal_topic;

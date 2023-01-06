@@ -40,6 +40,18 @@ public slots:
     void btn_load_rvizConfig_clicked();
     void btn_save_rvizConfig_clicked();
     void slot_disConenct();
+    void slot_speed_x(double x);
+    void slot_speed_y(double y);
+    void cmd_output();
+
+    void slot_set_2D_Goal();
+    void slot_set_2D_Pos();
+    void slot_set_select();
+    void slot_move_camera();
+
+    void slot_set_return_point();
+    void slot_return_point();
+    void slot_position_change(QString frame, double x, double y, double z, double w);
 
     void on_treeView_rvizDisplayTree_clicked(const QModelIndex &index);
 private slots:
@@ -51,7 +63,7 @@ private:
     ControlPage *controlWidget;
     int m_currentSilderPage;
 
-    AppNode app_node;
+    AppNode *app_node;
     
     AppRviz *app_rviz = nullptr;
     AddTopicPage *add_topic = nullptr;

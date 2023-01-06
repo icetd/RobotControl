@@ -12,7 +12,6 @@
 
 MainWindow::MainWindow(int argc, char **argv, QWidget *parent) :
     QMainWindow(parent),
-    app_node(argc, argv),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -20,6 +19,7 @@ MainWindow::MainWindow(int argc, char **argv, QWidget *parent) :
     this->setWindowIcon(QIcon(":/Icon/Mario.ico"));
     
     controlWidget = new ControlPage;
+    app_node = new AppNode(argc, argv);
     ui->tabWidget_right->addTab(controlWidget, "控制");
     
     ui->tabWidget_left->setCurrentIndex(0);
@@ -106,19 +106,29 @@ void MainWindow::connections()
     connect(ui->btn_load_rvizConfig, SIGNAL(clicked()), this, SLOT(btn_load_rvizConfig_clicked()));
     connect(ui->btn_save_rvizConfig, SIGNAL(clicked()), this, SLOT(btn_save_rvizConfig_clicked()));
     connect(ui->btn_disconnect, SIGNAL(clicked()), this, SLOT(slot_disConenct()));
-    connect(&app_node, SIGNAL(rosShutdown()), this, SLOT(slot_disConenct()));
+    connect(app_node, SIGNAL(rosShutdown()), this, SLOT(slot_disConenct()));
+    connect(app_node, SIGNAL(speed_x(double)), this, SLOT(slot_speed_x(double)));
+    connect(app_node, SIGNAL(speed_y(double)), this, SLOT(slot_speed_y(double)));
+    connect(app_node, SIGNAL(signal_position(QString, double, double, double, double)), this, 
+                SLOT(slot_position_change(QString, double, double, double, double)));
+    connect(ui->btn_set_pos, SIGNAL(clicked()), this, SLOT(slot_set_2D_Pos()));
+    connect(ui->btn_set_goal, SIGNAL(clicked()), this, SLOT(slot_set_2D_Goal()));
+    connect(ui->btn_move_camera, SIGNAL(clicked()), this, SLOT(slot_move_camera()));
+    connect(ui->btn_select, SIGNAL(clicked()), this, SLOT(slot_set_select()));
+    connect(ui->btn_set_return, SIGNAL(clicked()), this, SLOT(slot_set_return_point()));
+    connect(ui->btn_return, SIGNAL(clicked()), this, SLOT(slot_return_point()));
 }
 
 bool MainWindow::connectMaster(QString master_ip, QString local_ip, bool use_env)
 {
     if (use_env) {
-        if (!app_node.init()) {
+        if (!app_node->init()) {
             return false;
         } else {
             
         }
     } else {
-        if (!app_node.init(master_ip.toStdString(), local_ip.toStdString())) {
+        if (!app_node->init(master_ip.toStdString(), local_ip.toStdString())) {
             return false;
         } else {
             QFile qss(":/Qss/style1.qss");
@@ -166,7 +176,7 @@ void MainWindow::slot_cmd_control(char cmd, int16_t speed_liner, int16_t speed_a
 {
     float liner = speed_liner * 0.01;
     float angle = speed_angle * 0.01;
-    app_node.move(cmd, liner, angle);
+    app_node->move(cmd, liner, angle);
 }
 
 void MainWindow::slot_choose_topic(QTreeWidgetItem* choose, QString name)
@@ -324,4 +334,49 @@ QString MainWindow::getUsername()
     case RobotStatus::none: 
         break;
     }
+ }
+
+ void MainWindow::slot_speed_x(double x)
+ {
+ }
+ void MainWindow::slot_speed_y(double y)
+ {
+ }
+ void MainWindow::cmd_output()
+ {
+
+ }
+
+ void MainWindow::slot_set_2D_Goal()
+ {
+    app_rviz->setGoal();
+ }
+ void MainWindow::slot_set_2D_Pos()
+ {
+    app_rviz->setPos();
+ }
+ void MainWindow::slot_set_select()
+ {
+    app_rviz->setSelect();
+ }
+ void MainWindow::slot_move_camera()
+ {
+    app_rviz->setMoveCamera();
+ }
+
+ void MainWindow::slot_set_return_point()
+ {
+    app_node->set_goal(ui->label_frame->text(), ui->label_x_return->text().toDouble(), ui->label_y_return->text().toDouble(),
+                                                ui->label_z_return->text().toDouble(), ui->label_w_return->text().toDouble());
+ }
+ void MainWindow::slot_return_point()
+ {
+ }
+ void MainWindow::slot_position_change(QString frame, double x, double y, double z, double w)
+ {
+    ui->label_frame->setText(frame);
+    ui->label_x->setText(QString::number(x));
+    ui->label_y->setText(QString::number(y));
+    ui->label_z->setText(QString::number(z));
+    ui->label_w->setText(QString::number(w));
  }
